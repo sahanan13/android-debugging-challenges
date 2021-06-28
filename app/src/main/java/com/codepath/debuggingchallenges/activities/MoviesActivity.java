@@ -1,9 +1,11 @@
 package com.codepath.debuggingchallenges.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
@@ -14,6 +16,7 @@ import com.codepath.debuggingchallenges.models.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import java.util.List;
 
 import java.util.ArrayList;
 
@@ -25,7 +28,7 @@ public class MoviesActivity extends AppCompatActivity {
 
     RecyclerView rvMovies;
     MoviesAdapter adapter;
-    ArrayList<Movie> movies;
+    ArrayList<Movie> movies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +47,17 @@ public class MoviesActivity extends AppCompatActivity {
 
 
     private void fetchMovies() {
-        String url = " https://api.themoviedb.org/3/movie/now_playing?api_key=";
+        String url = " https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON response) {
                 try {
                     JSONArray moviesJson = response.jsonObject.getJSONArray("results");
-                    movies = Movie.fromJSONArray(moviesJson);
+                    //movies = Movie.fromJSONArray(moviesJson);
+                    movies.addAll(Movie.fromJSONArray(moviesJson));
+                    adapter.notifyDataSetChanged();
+                    //og.i("MoviesActivity", "Movies**: " + movies);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
